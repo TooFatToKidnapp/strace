@@ -2,3 +2,5 @@ ft_strace
 ft_strace.dSYM
 obj/
 .vscode/
+.vagrant/
+.ssh_env

@@ -14,7 +14,7 @@ SRC_INCLUDE = $(SRC_PATH)
 
 INC = $(addprefix -I,  $(SRC_INCLUDE))
 
-SRC = $(addprefix $(SRC_PATH)/, main.c)
+SRC = $(addprefix $(SRC_PATH)/, main.c cli_args.c)
 
 INCLUDE_FILES = $(wildcard $(INCLUDE_PATH)/*.h)
 
