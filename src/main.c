@@ -1,7 +1,6 @@
 #include "../includes/strace.h"
 
 int32_t main(int32_t argc, char *argv[]) {
-
   if (argc < 2) {
     LOG("ft_strace: must have PROG [ARGS] OPTION [-c] \n");
     return 1;
