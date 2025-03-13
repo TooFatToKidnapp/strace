@@ -2,7 +2,7 @@ NAME = ft_strace
 
 CC = gcc
 
-CCFLAGS = -Wall -Wextra -Werror -g -fsanitize=address,undefined,leak
+CCFLAGS = -Wall -Wextra -Werror #-g -fsanitize=address,undefined,leak
 
 SRC_PATH = ./src
 
@@ -12,9 +12,9 @@ OBJ_PATH = ./obj
 
 SRC_INCLUDE = $(SRC_PATH)
 
-INC = $(addprefix -I,  $(SRC_INCLUDE))
+INC = $(addprefix -I,  $(INCLUDE_PATH))
 
-SRC = $(addprefix $(SRC_PATH)/, main.c cli_args.c)
+SRC = $(addprefix $(SRC_PATH)/, main.c cli_args.c strace.c syscall.c)
 
 INCLUDE_FILES = $(wildcard $(INCLUDE_PATH)/*.h)
 

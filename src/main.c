@@ -15,5 +15,6 @@ int32_t main(int32_t argc, char *argv[]) {
     LOG("Summary enabled\n");
   }
   drop_command(&command, NULL);
+  strace(&command);
   return 0;
 }

@@ -1,10 +1,7 @@
 #include "../includes/strace.h"
 
 static void do_child(t_command* command) {
-  if (ptrace(PTRACE_TRACEME) == -1) {
-    drop_command(command, "ptrace failed\n");
-    exit(1);
-  }
+  ptrace(PTRACE_TRACEME);
   raise(SIGSTOP);
   execvp(command->command_path, command->command_args);
   drop_command(command, "ptrace failed\n");
@@ -12,21 +9,23 @@ static void do_child(t_command* command) {
   exit(1);
 }
 
-static do_parent(t_command* command) {
-  int status;
-  waitpid(command->pid, &status, 0);
-  if (WIFSTOPPED(status)) {
-    ptrace(PTRACE_SETOPTIONS, command->pid, 0, PTRACE_O_EXITKILL);
-    // ptrace(PTRACE_CONT, command->pid, 0, 0);
-    waitpid(command->pid, &status, 0);
-    if (WIFEXITED(status)) {
-      LOG("child exited with status %d\n", WEXITSTATUS(status));
-    }
+static void do_parent(t_command* command) {
+  ptrace(PTRACE_SEIZE, command->pid, 0, PTRACE_O_TRACESYSGOOD); // TRACE THE CHILD
+  waitpid(command->pid, 0, 0); // WAIT FOR THE CHILD TO STOP
+  sigset_t mask = {0};
+  sigfillset(&mask);
+  sigprocmask(SIG_SETMASK, &mask, 0); // parent will not receive any non interupt signals
+  bool is_sys_exit = false;
+
+  // t_sys_cycle sys_enter = {0};
+  // t_sys_cycle sys_exit = {0};
+
+  while (true) {
+    // if (!is_sys_exit) {
+    //   sys_enter =
+    // }
+    is_sys_exit = !is_sys_exit;
   }
-  else {
-    LOG("child stopped with status %d\n", WSTOPSIG(status));
-  }
-  return 0;
 }
 
 
