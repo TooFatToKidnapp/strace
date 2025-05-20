@@ -12,9 +12,30 @@
 #include <sys/ptrace.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <sys/syscall.h>
+#include "lookup_table_32.h"
+#include "lookup_table_64.h"
 
 #define DBG(fmt, ...)  fprintf(stderr, "DEBUG: %s:%d: " fmt, __FILE__, __LINE__, ##__VA_ARGS__);
 #define LOG(fmt, ...)  fprintf(stderr, fmt, ##__VA_ARGS__)
+
+typedef enum sys_param_types {
+  UNKNOWN,
+  NONE,
+  INT,
+  UINT,
+  LONG,
+  LONG_LONG,
+  ULONG,
+  ULONG_LONG,
+
+  UNDEFINED_PTR,
+  CHAR_PTR,
+  STRUCT_PTR,
+  INT_PTR,
+
+  STRUCT
+} e_sys_param_types;
 
 typedef struct s_command {
   char* command_path;
