@@ -1,5 +1,6 @@
 #ifndef LOOKUP_TABLE_64_H
 #define LOOKUP_TABLE_64_H
+
 #include "./strace.h"
 
 #define LOOKUP_TABLE_64  \
@@ -234,7 +235,7 @@
   [113] = {"setreuid", {UINT, UINT}, INT}, \
   /*  int setregid(gid_t rgid, gid_t egid); */ \
   [114] = {"setregid", {UINT, UINT}, INT}, \
-  /*  int getgroups(int size, gid_t list[]); */ \ \
+  /*  int getgroups(int size, gid_t list[]); */  \
   [115] = {"getgroups", {INT, UNDEFINED_PTR}, INT}, \
   /*  int setgroups(size_t size, const gid_t *list); */ \
   [116] = {"setgroups", {UINT, UNDEFINED_PTR}, INT}, \
@@ -474,7 +475,7 @@
   [233] = {"epoll_ctl", {INT, INT, INT, STRUCT_PTR}, INT}, \
   /*  int tgkill(pid_t tgid, pid_t tid, int sig); */ \
   [234] = {"tgkill", {INT, INT, INT}, INT}, \
-  /*  int utimes(const char *filename, const struct timeval times[2]); */ \ \
+  /*  int utimes(const char *filename, const struct timeval times[2]); */  \
   [235] = {"utimes", {CHAR_PTR, STRUCT_PTR}, INT}, \
   /*  int vserver(void); */ \
   [236] = {"vserver", {NONE}, INT}, \
@@ -526,7 +527,7 @@
   [259] = {"mknodat", {INT, CHAR_PTR, UINT, ULONG}, INT}, \
   /*  int fchownat(int dirfd, const char *pathname, uid_t owner, gid_t group, int flags); */ \
   [260] = {"fchownat", {INT, CHAR_PTR, UINT, UINT, INT}, INT}, \
-  /*  int futimesat(int dirfd, const char *pathname, const struct timeval times[2]); */ \ \
+  /*  int futimesat(int dirfd, const char *pathname, const struct timeval times[2]); */  \
   [261] = {"futimesat", {INT, CHAR_PTR, STRUCT_PTR}, INT}, \
   /*  int newfstatat(int dirfd, const char *pathname, struct stat *statbuf, int flags); */ \
   [262] = {"newfstatat", {INT, CHAR_PTR, STRUCT_PTR, INT}, INT}, \
@@ -564,7 +565,7 @@
   [278] = {"vmsplice", {INT, STRUCT_PTR, ULONG, UINT}, INT}, \
   /*  long move_pages(int pid, unsigned long count, void **pages, const int *nodes, int *status, int flags); */ \
   [279] = {"move_pages", {INT, ULONG, UNDEFINED_PTR, INT_PTR, INT_PTR, INT}, LONG}, \
-  /*  int utimensat(int dirfd, const char *pathname, const struct timespec times[2], int flags); */ \ \
+  /*  int utimensat(int dirfd, const char *pathname, const struct timespec times[2], int flags); */  \
   [280] = {"utimensat", {INT, CHAR_PTR, STRUCT_PTR, INT}, INT}, \
   /*  int epoll_pwait(int epfd, struct epoll_event *events, int maxevents, int timeout, const sigset_t *sigmask); */ \
   [281] = {"epoll_pwait", {INT, STRUCT_PTR, INT, INT, STRUCT_PTR}, INT}, \
@@ -590,7 +591,7 @@
   [291] = {"epoll_create1", {INT}, INT}, \
   /*  int dup3(int oldfd, int newfd, int flags); */ \
   [292] = {"dup3", {INT, INT, INT}, INT}, \
-  /*  int pipe2(int pipefd[2], int flags); */ \ \
+  /*  int pipe2(int pipefd[2], int flags); */  \
   [293] = {"pipe2", {INT_PTR, INT}, INT}, \
   /*  int inotify_init1(int flags); */ \
   [294] = {"inotify_init1", {INT}, INT}, \
