@@ -13,6 +13,10 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/syscall.h>
+// #include <asm-generic/signal.h>
+// #include <asm-generic/siginfo.h>
+#include <sys/uio.h>
+#include <linux/elf.h>
 
 #include "lookup_table_32.h"
 #include "lookup_table_64.h"
@@ -43,6 +47,7 @@ typedef struct s_command {
   char** command_args;
   pid_t pid;
   bool is_summery_enabled;
+  char** env;
 } t_command;
 
 typedef enum cpu_arch {
@@ -51,8 +56,8 @@ typedef enum cpu_arch {
 } e_cpu_arch;
 
 typedef enum process_status {
-  RUN,
-  EXIT,
+  RUNNING,
+  EXITED,
   SIGNAL,
 } e_process_status;
 
@@ -65,6 +70,7 @@ typedef struct s_syscall_info {
 
 // https://wiki.osdev.org/CPU_Registers_x86-64
 // https://sites.uclouvain.be/SystInfo/usr/include/sys/user.h.html
+// #include <sys/user.h>
 typedef struct proc_reg_64 {
   uint64_t r15;
   uint64_t r14;
@@ -122,13 +128,15 @@ typedef struct s_sys_cycle {
   e_cpu_arch arch;
   e_process_status status;
   t_syscall_signature_info syscall;
-  int64_t args[6];
-  int64_t ret;
+  uint64_t args[6];
+  uint64_t ret;
 } t_sys_cycle;
 
+extern t_syscall_signature_info sys_table_64[];
+extern t_syscall_signature_info sys_table_32[];
 
 void init_command(t_command *command, char *argv[]);
 void drop_command(t_command *command, char * reason);
 void strace(t_command* command);
-
+t_sys_cycle get_syscall_info(t_command* command);
 #endif
