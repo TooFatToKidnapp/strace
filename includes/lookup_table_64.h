@@ -380,7 +380,7 @@
   /*  pid_t gettid(void); */ \
   [186] = {"gettid", {NONE}, INT}, \
   /*  ssize_t readahead(int fd, off64_t offset, size_t count); */ \
-  [187] = {"readahead", {INT, LONG_LONG, UINT}, INT}, \
+  [187] = {"readahead", {INT, LONG, UINT}, INT}, \
   /*  int setxattr(const char *path, const char *name, const void *value, size_t size, int flags); */ \
   [188] = {"setxattr", {CHAR_PTR, CHAR_PTR, UNDEFINED_PTR, UINT, INT}, INT}, \
   /*  int lsetxattr(const char *path, const char *name, const void *value, size_t size, int flags); */ \
@@ -430,7 +430,7 @@
   /*  int get_thread_area(struct user_desc *u_info); */ \
   [211] = {"get_thread_area", {STRUCT_PTR}, INT}, \
   /*  int lookup_dcookie(u64 cookie, char *buffer, size_t len); */ \
-  [212] = {"lookup_dcookie", {ULONG_LONG, CHAR_PTR, UINT}, INT}, \
+  [212] = {"lookup_dcookie", {ULONG, CHAR_PTR, UINT}, INT}, \
   /*  int epoll_create(int size); */ \
   [213] = {"epoll_create", {INT}, INT}, \
   /*  int epoll_ctl_old(void); */ \
@@ -560,7 +560,7 @@
   /*  ssize_t tee(int fd_in, int fd_out, size_t len, unsigned int flags); */ \
   [276] = {"tee", {INT, INT, UINT, UINT}, INT}, \
   /*  int sync_file_range(int fd, off64_t offset, off64_t nbytes, unsigned int flags); */ \
-  [277] = {"sync_file_range", {INT, LONG_LONG, LONG_LONG, UINT}, INT}, \
+  [277] = {"sync_file_range", {INT, LONG, LONG, UINT}, INT}, \
   /*  ssize_t vmsplice(int fd, const struct iovec *iov, unsigned long nr_segs, unsigned int flags); */ \
   [278] = {"vmsplice", {INT, STRUCT_PTR, ULONG, UINT}, INT}, \
   /*  long move_pages(int pid, unsigned long count, void **pages, const int *nodes, int *status, int flags); */ \
@@ -608,7 +608,7 @@
   /*  int fanotify_init(unsigned int flags, unsigned int event_f_flags); */ \
   [300] = {"fanotify_init", {UINT, UINT}, INT}, \
   /*  int fanotify_mark(int fanotify_fd, unsigned int flags, uint64_t mask, int dfd, const char *pathname); */ \
-  [301] = {"fanotify_mark", {INT, UINT, ULONG_LONG, INT, CHAR_PTR}, INT}, \
+  [301] = {"fanotify_mark", {INT, UINT, ULONG, INT, CHAR_PTR}, INT}, \
   /*  int prlimit64(pid_t pid, int resource, const struct rlimit64 *new_limit, struct rlimit64 *old_limit); */ \
   [302] = {"prlimit64", {INT, INT, STRUCT_PTR, STRUCT_PTR}, INT}, \
   /*  int name_to_handle_at(int dirfd, const char *pathname, struct file_handle *handle, int *mount_id, int flags); */ \

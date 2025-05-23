@@ -1,6 +1,7 @@
 #ifndef STRACE_H
 #define STRACE_H
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -13,8 +14,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/syscall.h>
-// #include <asm-generic/signal.h>
-// #include <asm-generic/siginfo.h>
+
 #include <sys/uio.h>
 #include <linux/elf.h>
 
@@ -29,9 +29,7 @@ typedef enum sys_param_types {
   INT,
   UINT,
   LONG,
-  LONG_LONG,
   ULONG,
-  ULONG_LONG,
 
   UNDEFINED_PTR,
   CHAR_PTR,
@@ -39,7 +37,6 @@ typedef enum sys_param_types {
   INT_PTR,
   UINT_PTR,
 
-  STRUCT
 } e_sys_param_types;
 
 typedef struct s_command {
@@ -139,4 +136,6 @@ void init_command(t_command *command, char *argv[]);
 void drop_command(t_command *command, char * reason);
 void strace(t_command* command);
 t_sys_cycle get_syscall_info(t_command* command);
+void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_pid);
+
 #endif

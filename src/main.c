@@ -20,6 +20,7 @@ int32_t main(int32_t argc, char *argv[], char** env) {
   if( command.is_summery_enabled) {
     LOG("Summary enabled\n");
   }
+  DBG("command.command_path == %p\n", command.command_path);
   strace(&command);
   drop_command(&command, NULL);
   return 0;

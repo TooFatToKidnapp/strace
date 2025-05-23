@@ -392,9 +392,9 @@
   /* void *mmap2(void *addr, size_t length, int prot, int flags, int fd, off_t pgoffset) */ \
   [192] = {"mmap2", {UNDEFINED_PTR, UINT, INT, INT, INT, LONG}, UNDEFINED_PTR}, \
   /* int truncate64(const char *path, off64_t length) */ \
-  [193] = {"truncate64", {CHAR_PTR, LONG_LONG}, INT}, \
+  [193] = {"truncate64", {CHAR_PTR, LONG}, INT}, \
   /* int ftruncate64(int fd, off64_t length) */ \
-  [194] = {"ftruncate64", {INT, LONG_LONG}, INT}, \
+  [194] = {"ftruncate64", {INT, LONG}, INT}, \
   /* int stat64(const char *pathname, struct stat64 *statbuf) */ \
   [195] = {"stat64", {CHAR_PTR, STRUCT_PTR}, INT}, \
   /* int lstat64(const char *pathname, struct stat64 *statbuf) */ \
@@ -452,7 +452,7 @@
   /* pid_t gettid(void) */ \
   [224] = {"gettid", {NONE}, INT}, \
   /* ssize_t readahead(int fd, off64_t offset, size_t count) */ \
-  [225] = {"readahead", {INT, LONG_LONG, UINT}, LONG}, \
+  [225] = {"readahead", {INT, LONG, UINT}, LONG}, \
   /* int setxattr(const char *path, const char *name, const void *value, size_t size, int flags) */ \
   [226] = {"setxattr", {CHAR_PTR, CHAR_PTR, UNDEFINED_PTR, UINT, INT}, INT}, \
   /* int lsetxattr(const char *path, const char *name, const void *value, size_t size, int flags) */ \
@@ -506,7 +506,7 @@
   /* void exit_group(int status) */ \
   [252] = {"exit_group", {INT}, NONE}, \
   /* int lookup_dcookie(u64 cookie, char *buffer, size_t len) */ \
-  [253] = {"lookup_dcookie", {ULONG_LONG, CHAR_PTR, UINT}, INT}, \
+  [253] = {"lookup_dcookie", {ULONG, CHAR_PTR, UINT}, INT}, \
   /* int epoll_create(int size) */ \
   [254] = {"epoll_create", {INT}, INT}, \
   /* int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event) */ \
@@ -544,7 +544,7 @@
   /* int utimes(const char *filename, const struct timeval times[2]) */ \
   [271] = {"utimes", {CHAR_PTR, STRUCT_PTR}, INT}, \
   /* int fadvise64_64(int fd, off64_t offset, off64_t len, int advice) */ \
-  [272] = {"fadvise64_64", {INT, LONG_LONG, LONG_LONG, INT}, INT}, \
+  [272] = {"fadvise64_64", {INT, LONG, LONG, INT}, INT}, \
   /* int vserver(int cmd, void *arg) - not implemented */ \
   [273] = {"vserver", {INT, UNDEFINED_PTR}, INT}, \
   /* int mbind(void *addr, unsigned long len, int mode, const unsigned long *nodemask, unsigned long maxnode, unsigned flags) */ \
@@ -626,7 +626,7 @@
   /* ssize_t splice(int fd_in, loff_t *off_in, int fd_out, loff_t *off_out, size_t len, unsigned int flags) */ \
   [313] = {"splice", {INT, UNDEFINED_PTR, INT, UNDEFINED_PTR, UINT, UINT}, LONG}, \
   /* int sync_file_range(int fd, off64_t offset, off64_t nbytes, unsigned int flags) */ \
-  [314] = {"sync_file_range", {INT, LONG_LONG, LONG_LONG, UINT}, INT}, \
+  [314] = {"sync_file_range", {INT, LONG, LONG, UINT}, INT}, \
   /* ssize_t tee(int fd_in, int fd_out, size_t len, unsigned int flags) */ \
   [315] = {"tee", {INT, INT, UINT, UINT}, LONG}, \
   /* ssize_t vmsplice(int fd, const struct iovec *iov, unsigned long nr_segs, unsigned int flags) */ \
@@ -676,7 +676,7 @@
   /* int fanotify_init(unsigned int flags, unsigned int event_f_flags) */ \
   [338] = { "fanotify_init", { UINT, UINT }, INT }, \
   /* int fanotify_mark(int fanotify_fd, unsigned int flags, uint64_t mask, int dirfd, const char *pathname) */ \
-  [339] = { "fanotify_mark", { INT, UINT, ULONG_LONG, INT, CHAR_PTR }, INT }, \
+  [339] = { "fanotify_mark", { INT, UINT, ULONG, INT, CHAR_PTR }, INT }, \
   /* int prlimit64(pid_t pid, int resource, const struct rlimit64 *new_limit, struct rlimit64 *old_limit) */ \
   [340] = { "prlimit64", { INT, INT, STRUCT_PTR, STRUCT_PTR }, INT }, \
   /* int name_to_handle_at(int dirfd, const char *pathname, struct file_handle *handle, int *mount_id, int flags) */ \
@@ -752,7 +752,7 @@
   /* int mlock2(const void *addr, size_t len, int flags) */ \
   [376] = { "mlock2", { UNDEFINED_PTR, UINT, INT }, INT }, \
   /* ssize_t copy_file_range(int fd_in, loff_t *off_in, int fd_out, loff_t *off_out, size_t len, unsigned int flags) */ \
-  [377] = { "copy_file_range", { INT, LONG_LONG, INT, LONG_LONG, UINT, UINT }, LONG }, \
+  [377] = { "copy_file_range", { INT, LONG, INT, LONG, UINT, UINT }, LONG }, \
   /* ssize_t preadv2(int fd, const struct iovec *iov, int iovcnt, off_t offset, int flags) */ \
   [378] = { "preadv2", { INT, STRUCT_PTR, INT, LONG, INT }, LONG }, \
   /* ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt, off_t offset, int flags) */ \
