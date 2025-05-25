@@ -2,7 +2,7 @@ NAME = ft_strace
 
 CC = gcc
 
-CCFLAGS = -Wall -Wextra -Werror -g -fsanitize=address,undefined,leak
+CCFLAGS = -Wall -Wextra -Werror -g -fsanitize=address,undefined,leak,signed-integer-overflow
 
 SRC_PATH = ./src
 

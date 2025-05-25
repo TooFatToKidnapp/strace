@@ -587,8 +587,8 @@
   [293] = {"inotify_rm_watch", {INT, INT}, INT}, \
   /* int migrate_pages(int pid, unsigned long maxnode, const unsigned long *old_nodes, const unsigned long *new_nodes) */ \
   [294] = {"migrate_pages", {INT, ULONG, UNDEFINED_PTR, UNDEFINED_PTR}, INT}, \
-  /* int openat(int dirfd, const char *pathname, int flags, mode_t mode) */ \
-  [295] = {"openat", {INT, CHAR_PTR, INT, UINT}, INT}, \
+  /* int openat(int dirfd, const char *pathname, int flags) */ \
+  [295] = {"openat", {INT, CHAR_PTR, INT}, INT}, \
   /* int mkdirat(int dirfd, const char *pathname, mode_t mode) */ \
   [296] = {"mkdirat", {INT, CHAR_PTR, UINT}, INT}, \
   /* int mknodat(int dirfd, const char *pathname, mode_t mode, dev_t dev) */ \

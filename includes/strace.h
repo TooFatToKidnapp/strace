@@ -14,9 +14,13 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/syscall.h>
-
+#include <errno.h>
 #include <sys/uio.h>
 #include <linux/elf.h>
+#include <ctype.h>
+#include <wctype.h>
+#include <wchar.h>
+#include <locale.h>
 
 #include "lookup_table_32.h"
 #include "lookup_table_64.h"

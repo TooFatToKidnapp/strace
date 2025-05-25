@@ -33,13 +33,18 @@ static void get_registers_info(t_sys_cycle * cycle, t_command* command) {
 t_sys_cycle get_syscall_info(t_command* command) {
   t_sys_cycle sys_cycle = {0};
   int32_t status;
-  siginfo_t info;
+  siginfo_t info = {0};
   if ( 0 > ptrace(PTRACE_SYSCALL, command->pid, NULL, NULL)) {
     drop_command(command, "ptrace PTRACE_SYSCALL failed\n");
     exit(1);
   }
   waitpid(command->pid, &status, 0);
-  ptrace(PTRACE_GETSIGINFO, command->pid, NULL, &info);
+
+  if ( 0 > ptrace(PTRACE_GETSIGINFO, command->pid, NULL, &info) && errno == EINVAL) {
+    drop_command(command, "ptrace PTRACE_GETSIGINFO failed\n");
+    exit(1);
+  }
+
   if (WIFEXITED(status)) { // the child process has exited
     sys_cycle.status = EXITED;
     sys_cycle.ret = WEXITSTATUS(status);

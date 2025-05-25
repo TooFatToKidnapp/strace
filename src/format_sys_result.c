@@ -9,7 +9,21 @@ static uint64_t align_arg_size(uint64_t arg, uint32_t size) {
   return masked;
 }
 
-static void *read_child_mem(void *ptr, uint32_t size, pid_t child_pid) {
+static bool is_printable_ascii(const void *data, size_t len) {
+  const unsigned char *bytes = (const unsigned char *)data;
+
+  for (uint32_t i = 0; bytes[i] && i < len; i++) {
+    if (!(bytes[i] >= 0x20 && bytes[i] <= 0x7E) &&
+        !(bytes[i] == '\t' || bytes[i] == '\n' ||
+          bytes[i] == '\r' || bytes[i] == '\f' ||
+          bytes[i] == '\v')) {
+      return false;
+    }
+  }
+  return true;
+}
+
+static struct iovec read_child_mem(void *ptr, uint32_t size, pid_t child_pid) {
   struct iovec src = {
     .iov_base = ptr,
     .iov_len = size
@@ -20,17 +34,15 @@ static void *read_child_mem(void *ptr, uint32_t size, pid_t child_pid) {
     .iov_len = size
   };
   if (dest.iov_base == NULL) {
-    return NULL;
+    return (struct iovec){ .iov_base = NULL, .iov_len = 0 };
   }
-#include <errno.h>
+
   if (0 > process_vm_readv(child_pid, &dest, 1, &src, 1, 0)) {
-    DBG("process_vm_readv FAILED %s\n", strerror(errno)); // Print the error reason
     free(dest.iov_base);
-    return NULL;
+    return (struct iovec){ .iov_base = NULL, .iov_len = 0 };
   }
 
-  return dest.iov_base;
-
+  return dest;
 }
 
 static void format_value(e_sys_param_types arg_type, uint64_t arg, e_cpu_arch current_arch, pid_t child_pid) {
@@ -42,31 +54,30 @@ static void format_value(e_sys_param_types arg_type, uint64_t arg, e_cpu_arch cu
   } else if (arg_type == INT) {
     LOG("%d", (int32_t)arg);
   } else if (arg_type == UINT) {
-    LOG("%d", (uint32_t)arg);
+    LOG("%u", (uint32_t)arg);
   } else if (arg_type == LONG) {
     LOG("%ld", (int64_t)arg);
   } else if (arg_type == ULONG) {
-    LOG("%ld", arg);
-  } else if (arg_type == UNDEFINED_PTR
-          || arg_type == STRUCT_PTR
+    LOG("%lu", arg);
+  } else if (arg_type == STRUCT_PTR
           || arg_type == INT_PTR
-          || arg_type == UINT_PTR ) {
+          || arg_type == UINT_PTR) {
       if (arg == 0) {
         LOG("NULL");
       } else {
-        LOG("%p", (void *)arg);
+        LOG("%p", (void*)arg);
       }
-  } else if (arg_type == CHAR_PTR) {
+  } else if (arg_type == CHAR_PTR || arg_type == UNDEFINED_PTR) {
     if (arg == 0) {
       LOG("NULL");
     } else {
-      void *data = read_child_mem((void*)arg, 4096, child_pid);
-      if (data == NULL) {
+      struct iovec data = read_child_mem((void*)arg, 4096, child_pid);
+      if (data.iov_base == NULL || !is_printable_ascii(data.iov_base, data.iov_len )) {
         LOG("%p", (void*)arg);
       } else {
-        LOG("\"%s\"", (char*)data);
-        free(data);
+        LOG("\"%s\"", (char*)data.iov_base);
       }
+        free(data.iov_base);
     }
   }
 }
