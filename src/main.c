@@ -2,7 +2,8 @@
 
 t_syscall_signature_info sys_table_64[] = LOOKUP_TABLE_64;
 t_syscall_signature_info sys_table_32[] = LOOKUP_TABLE_32;
-
+t_total_syscall_stats_32 time_table_32 = {0};
+t_total_syscall_stats_64 time_table_64 = {0};
 
 int32_t main(int32_t argc, char *argv[], char** env) {
   if (argc < 2) {
@@ -13,15 +14,8 @@ int32_t main(int32_t argc, char *argv[], char** env) {
     .env = env
   };
   init_command(&command, argv);
-  // DBG("command_path = [%s]\n", command.command_path);
-  // for (int32_t i = 0; command.command_args && command.command_args[i]; i++) {
-  //   DBG("command_args[%d] = [%s]\n", i, command.command_args[i]);
-  // }
-  // if( command.is_summery_enabled) {
-  //   LOG("Summary enabled\n");
-  // }
-  // DBG("command.command_path == %p\n", command.command_path);
   strace(&command);
+  format_syscall_summary();
   drop_command(&command, NULL);
   return 0;
 }

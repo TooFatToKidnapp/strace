@@ -21,12 +21,18 @@
 #include <wctype.h>
 #include <wchar.h>
 #include <locale.h>
+#include <time.h>
+#include <sys/time.h>
+#include <assert.h>
 
 #include "lookup_table_32.h"
 #include "lookup_table_64.h"
 
 #define DBG(fmt, ...)  fprintf(stderr, "DEBUG: %s:%d: " fmt, __FILE__, __LINE__, ##__VA_ARGS__);
 #define LOG(fmt, ...)  fprintf(stderr, fmt, ##__VA_ARGS__)
+
+#define GET_SYS_DURATION(start, end) \
+    ((end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000000.0)
 
 typedef enum sys_param_types {
   NONE,
@@ -130,16 +136,40 @@ typedef struct s_sys_cycle {
   e_process_status status;
   t_syscall_signature_info syscall;
   uint64_t args[6];
+  uint64_t eflags;
   uint64_t ret;
+  uint32_t sys_number;
 } t_sys_cycle;
+
+typedef struct syscall_stats{
+  uint32_t count;
+  uint32_t errors;
+  double time_spent;
+} t_syscall_stats;
+
+typedef struct total_syscall_stats_64 {
+  t_syscall_stats table[450];
+  double total_time;
+  bool to_print;
+} t_total_syscall_stats_64;
+
+typedef struct total_syscall_stats_32 {
+  t_syscall_stats table[450];
+  double total_time;
+  bool to_print;
+} t_total_syscall_stats_32;
+
 
 extern t_syscall_signature_info sys_table_64[];
 extern t_syscall_signature_info sys_table_32[];
+extern t_total_syscall_stats_32 time_table_32;
+extern t_total_syscall_stats_64 time_table_64;
 
 void init_command(t_command *command, char *argv[]);
 void drop_command(t_command *command, char * reason);
 void strace(t_command* command);
 t_sys_cycle get_syscall_info(t_command* command);
 void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_pid);
+void format_syscall_summary();
 
 #endif

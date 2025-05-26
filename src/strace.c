@@ -45,24 +45,60 @@ static void do_parent(t_command* command) {
   bool is_sys_exit = false;
   t_sys_cycle sys_enter_info = {0};
   t_sys_cycle sys_exit_info = {0};
+  struct timeval sys_start_time = {0};
+  struct timeval sys_end_time = {0};
 
   while (true) {
     t_sys_cycle *current_info = is_sys_exit ? &sys_exit_info : &sys_enter_info;
     *current_info = get_syscall_info(command);
 
     if (is_sys_exit) {
-      format_syscall(&sys_enter_info, &sys_exit_info, command->pid);
+      if (command->is_summery_enabled) {
+        if (0 > gettimeofday(&sys_end_time, NULL)) {
+          drop_command(command, "gettimeofday failed\n");
+          exit(1);
+        }
+        double sys_duration = GET_SYS_DURATION(sys_start_time, sys_end_time);
+
+        if (current_info->arch == ARCH_32 && current_info->syscall.name) {
+          time_table_32.to_print = true;
+          time_table_32.table[sys_enter_info.sys_number].count++;
+          time_table_32.table[sys_enter_info.sys_number].time_spent += sys_duration;
+          if (current_info->eflags & 1) {
+            time_table_32.table[sys_enter_info.sys_number].errors++;
+          }
+          time_table_32.total_time += sys_duration;
+        } else if (current_info->arch == ARCH_64 && current_info->syscall.name) {
+          time_table_64.to_print = true;
+          time_table_64.table[sys_enter_info.sys_number].count++;
+          time_table_64.table[sys_enter_info.sys_number].time_spent += sys_duration;
+          if (current_info->eflags & 1) {
+            time_table_64.table[sys_enter_info.sys_number].errors++;
+          }
+          time_table_64.total_time += sys_duration;
+        }
+      } else {
+        format_syscall(&sys_enter_info, &sys_exit_info, command->pid);
+      }
+    } else if (command->is_summery_enabled) {
+      if (0 > gettimeofday(&sys_start_time, NULL)) {
+        drop_command(command, "gettimeofday failed\n");
+        exit(1);
+      }
     }
 
+
     if (current_info->status != RUNNING) {
-      if (current_info->status == EXITED) {
-        LOG("+++ EXITED WITH %ld +++\n", current_info->ret);
-      } else {
-        LOG("+++ KILLED BY SIG %s +++\n", strsignal((int)current_info->ret));
+      if (command->is_summery_enabled == false) {
+        if (current_info->status == EXITED) {
+          LOG("+++ EXITED WITH %ld +++\n", current_info->ret);
+        } else {
+          LOG("+++ KILLED BY SIG %s +++\n", strsignal((int)current_info->ret));
+        }
       }
         break;
-      }
-      is_sys_exit = !is_sys_exit;
+    }
+    is_sys_exit = !is_sys_exit;
   }
 }
 

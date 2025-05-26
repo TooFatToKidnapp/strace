@@ -11,6 +11,12 @@ static void get_registers_info(t_sys_cycle * cycle, t_command* command) {
     drop_command(command, "ptrace PTRACE_GETREGSET failed\n");
     exit(1);
   }
+      if (io.iov_len == sizeof(t_proc_reg_64)) {
+        DBG("syscall [%s], ret %ld | eflag %ld | %ld | %ld | %ld | %ld | %ld | %ld\n",
+        (sys_table_64 + regs.orig_rax)->name,
+        regs.rax, regs.eflags,regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9);
+      }
+
 
   if (io.iov_len == sizeof(t_proc_reg_64)) {
     cycle->arch = ARCH_64;
@@ -18,6 +24,8 @@ static void get_registers_info(t_sys_cycle * cycle, t_command* command) {
     uint64_t sys_args[6] = {regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9 };
     memcpy(cycle->args, sys_args, sizeof(sys_args));
     cycle->ret = regs.rax;
+    cycle->eflags = regs.eflags;
+    cycle->sys_number = regs.orig_rax;
   } else {
     t_proc_reg_32 regs_32 = {0};
     memcpy(&regs_32, &regs, sizeof(regs_32));
@@ -26,6 +34,8 @@ static void get_registers_info(t_sys_cycle * cycle, t_command* command) {
     uint64_t sys_args[6] = {regs_32.ebx, regs_32.ecx, regs_32.edx, regs_32.esi, regs_32.edi, regs_32.ebp };
     memcpy(cycle->args, sys_args, sizeof(sys_args));
     cycle->ret = regs_32.eax;
+    cycle->eflags = regs_32.eflags;
+    cycle->sys_number = regs_32.orig_eax;
   }
   return;
 }

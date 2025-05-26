@@ -61,13 +61,14 @@ static void format_value(e_sys_param_types arg_type, uint64_t arg, e_cpu_arch cu
     LOG("%lu", arg);
   } else if (arg_type == STRUCT_PTR
           || arg_type == INT_PTR
-          || arg_type == UINT_PTR) {
+          || arg_type == UINT_PTR
+          || arg_type == UNDEFINED_PTR) {
       if (arg == 0) {
         LOG("NULL");
       } else {
         LOG("%p", (void*)arg);
       }
-  } else if (arg_type == CHAR_PTR || arg_type == UNDEFINED_PTR) {
+  } else if (arg_type == CHAR_PTR) {
     if (arg == 0) {
       LOG("NULL");
     } else {
