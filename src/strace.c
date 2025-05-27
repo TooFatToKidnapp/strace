@@ -60,19 +60,19 @@ static void do_parent(t_command* command) {
         }
         double sys_duration = GET_SYS_DURATION(sys_start_time, sys_end_time);
 
-        if (current_info->arch == ARCH_32 && current_info->syscall.name) {
+        if (sys_enter_info.arch == ARCH_32 && current_info->syscall.name) {
           time_table_32.to_print = true;
           time_table_32.table[sys_enter_info.sys_number].count++;
           time_table_32.table[sys_enter_info.sys_number].time_spent += sys_duration;
-          if (current_info->eflags & 1) {
+          if ((uint32_t)current_info->ret >= (uint32_t)-4095) {
             time_table_32.table[sys_enter_info.sys_number].errors++;
           }
           time_table_32.total_time += sys_duration;
-        } else if (current_info->arch == ARCH_64 && current_info->syscall.name) {
+        } else if (sys_enter_info.arch == ARCH_64 && current_info->syscall.name) {
           time_table_64.to_print = true;
           time_table_64.table[sys_enter_info.sys_number].count++;
           time_table_64.table[sys_enter_info.sys_number].time_spent += sys_duration;
-          if (current_info->eflags & 1) {
+          if (current_info->ret >= (uint64_t)-4095) {
             time_table_64.table[sys_enter_info.sys_number].errors++;
           }
           time_table_64.total_time += sys_duration;

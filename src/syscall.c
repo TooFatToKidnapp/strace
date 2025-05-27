@@ -11,12 +11,6 @@ static void get_registers_info(t_sys_cycle * cycle, t_command* command) {
     drop_command(command, "ptrace PTRACE_GETREGSET failed\n");
     exit(1);
   }
-      if (io.iov_len == sizeof(t_proc_reg_64)) {
-        DBG("syscall [%s], ret %ld | eflag %ld | %ld | %ld | %ld | %ld | %ld | %ld\n",
-        (sys_table_64 + regs.orig_rax)->name,
-        regs.rax, regs.eflags,regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9);
-      }
-
 
   if (io.iov_len == sizeof(t_proc_reg_64)) {
     cycle->arch = ARCH_64;

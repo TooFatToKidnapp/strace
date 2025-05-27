@@ -86,9 +86,6 @@ static void format_value(e_sys_param_types arg_type, uint64_t arg, e_cpu_arch cu
 
 void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_pid) {
   if (sys_enter->status != RUNNING) return;
-  if (sys_exit->status == RUNNING && sys_enter->arch != sys_exit->arch) {
-    LOG("Architecture switched to %s\n", sys_exit->arch == ARCH_32 ? "x86" : "x86_64");
-  }
 
   LOG("%s(", sys_enter->syscall.name);
   for (uint32_t i = 0; i < 6 && sys_exit->syscall.args[i] != NONE; ++i) {
@@ -103,4 +100,8 @@ void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_p
     LOG("?");
   }
   LOG("\n");
+
+  if (sys_exit->status == RUNNING && sys_enter->arch != sys_exit->arch) {
+    LOG("Architecture switched to %s\n", sys_exit->arch == ARCH_32 ? "x86" : "x86_64");
+  }
 }

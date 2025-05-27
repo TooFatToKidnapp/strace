@@ -10,7 +10,7 @@ static void print_summary_table(t_syscall_stats * syscall_stats, double total_ti
     if (syscall_stats[i].count > 0) {
       double percent = (total_time > 0) ? (syscall_stats[i].time_spent * 100 / total_time) : 0;
       double usecs_per_call = (syscall_stats[i].count > 0) ?
-        (syscall_stats[i].time_spent / syscall_stats[i].count) : 0;
+        ((syscall_stats[i].time_spent * 1000000) / syscall_stats[i].count) : 0;
       char *name = NULL;
       is_64 == true ? (name = (sys_table_64 + i)->name) : (name = (sys_table_32 + i)->name);
       LOG("%6.2f %11.6f %11.0f %9d %9d %s\n",
@@ -27,7 +27,7 @@ static void print_summary_table(t_syscall_stats * syscall_stats, double total_ti
 
     LOG("------ ----------- ----------- --------- --------- ----------------\n");
     LOG("%6.2f %11.6f %11.0f %9lu %9lu total\n",
-           100.0, total_time, 0.0, total_calls, total_errors);
+           100.0, total_time, (total_time / total_calls) * 1000000  , total_calls, total_errors);
 }
 
 void format_syscall_summary() {
@@ -36,6 +36,7 @@ void format_syscall_summary() {
   }
 
   if (time_table_32.to_print) {
+    LOG("System call usage summary for 32 bit mode:\n");
     print_summary_table(time_table_32.table, time_table_32.total_time, false);
   }
 }
