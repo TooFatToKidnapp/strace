@@ -24,9 +24,11 @@
 #include <time.h>
 #include <sys/time.h>
 #include <assert.h>
+#include <errno.h>
 
 #include "lookup_table_32.h"
 #include "lookup_table_64.h"
+#include "errno_table.h"
 
 #define DBG(fmt, ...)  fprintf(stderr, "DEBUG: %s:%d: " fmt, __FILE__, __LINE__, ##__VA_ARGS__);
 #define LOG(fmt, ...)  fprintf(stderr, fmt, ##__VA_ARGS__)
@@ -164,6 +166,7 @@ extern t_syscall_signature_info sys_table_64[];
 extern t_syscall_signature_info sys_table_32[];
 extern t_total_syscall_stats_32 time_table_32;
 extern t_total_syscall_stats_64 time_table_64;
+extern char *errno_table[];
 
 void init_command(t_command *command, char *argv[]);
 void drop_command(t_command *command, char * reason);

@@ -4,6 +4,7 @@ t_syscall_signature_info sys_table_64[] = LOOKUP_TABLE_64;
 t_syscall_signature_info sys_table_32[] = LOOKUP_TABLE_32;
 t_total_syscall_stats_32 time_table_32 = {0};
 t_total_syscall_stats_64 time_table_64 = {0};
+char *errno_table[] = ERRNO_TABLE;
 
 int32_t main(int32_t argc, char *argv[], char** env) {
   if (argc < 2) {

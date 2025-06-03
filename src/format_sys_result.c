@@ -83,6 +83,13 @@ static void format_value(e_sys_param_types arg_type, uint64_t arg, e_cpu_arch cu
   }
 }
 
+static void format_syscall_error(int64_t err) {
+  if (-err > 143 || -err == 41 || -err == 58 || -err == 136 || -err == 137) {
+    LOG("? UNKNOWN errno %ld", -err);
+  } else {
+    LOG("-1 %s (%s)", errno_table[-err], strerror(-err));
+  }
+}
 
 void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_pid) {
   if (sys_enter->status != RUNNING) return;
@@ -95,7 +102,11 @@ void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_p
 
   LOG(") = ");
   if (sys_exit->status == RUNNING) {
-    format_value(sys_exit->syscall.ret, sys_exit->ret, sys_exit->arch, child_pid);
+    if ((uint32_t)sys_exit->ret >= (uint32_t)-4095) {
+      format_syscall_error((int64_t)sys_exit->ret);
+    } else {
+      format_value(sys_exit->syscall.ret, sys_exit->ret, sys_exit->arch, child_pid);
+    }
   } else {
     LOG("?");
   }
