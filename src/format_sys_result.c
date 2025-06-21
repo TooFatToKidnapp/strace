@@ -83,8 +83,11 @@ static void format_value(e_sys_param_types arg_type, uint64_t arg, e_cpu_arch cu
   }
 }
 
-static void format_syscall_error(int64_t err) {
-  if (-err > 143 || -err == 41 || -err == 58 || -err == 136 || -err == 137) {
+static void format_syscall_error(int64_t err, e_cpu_arch arch) {
+  if (arch == ARCH_32) {
+    err -= 4294967296; // tmejnin
+  }
+  if (-err > 143 || -err == 41 || -err == 58 || -err == 136 || -err == 137 || -err < 0 || -err > 143) {
     LOG("? UNKNOWN errno %ld", -err);
   } else {
     LOG("-1 %s (%s)", errno_table[-err], strerror(-err));
@@ -93,9 +96,8 @@ static void format_syscall_error(int64_t err) {
 
 void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_pid) {
   if (sys_enter->status != RUNNING) return;
-
   LOG("%s(", sys_enter->syscall.name);
-  for (uint32_t i = 0; i < 6 && sys_exit->syscall.args[i] != NONE; ++i) {
+  for (uint32_t i = 0; i < 6 && sys_enter->syscall.args[i] != NONE; ++i) {
     if (i > 0) LOG(", ");
     format_value(sys_enter->syscall.args[i], sys_enter->args[i], sys_enter->arch, child_pid);
   }
@@ -103,7 +105,7 @@ void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_p
   LOG(") = ");
   if (sys_exit->status == RUNNING) {
     if ((uint32_t)sys_exit->ret >= (uint32_t)-4095) {
-      format_syscall_error((int64_t)sys_exit->ret);
+      format_syscall_error((int64_t)sys_exit->ret, sys_exit->arch);
     } else {
       format_value(sys_exit->syscall.ret, sys_exit->ret, sys_exit->arch, child_pid);
     }
@@ -111,8 +113,7 @@ void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_p
     LOG("?");
   }
   LOG("\n");
-
   if (sys_exit->status == RUNNING && sys_enter->arch != sys_exit->arch) {
-    LOG("Architecture switched to %s\n", sys_exit->arch == ARCH_32 ? "x86" : "x86_64");
+    LOG("[ Architecture switched to %s ]\n", sys_exit->arch == ARCH_32 ? "x86" : "x86_64");
   }
 }

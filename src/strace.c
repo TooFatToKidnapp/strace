@@ -87,7 +87,6 @@ static void do_parent(t_command* command) {
       }
     }
 
-
     if (current_info->status != RUNNING) {
       if (command->is_summery_enabled == false) {
         if (current_info->status == EXITED) {

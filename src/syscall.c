@@ -42,7 +42,10 @@ t_sys_cycle get_syscall_info(t_command* command) {
     drop_command(command, "ptrace PTRACE_SYSCALL failed\n");
     exit(1);
   }
-  waitpid(command->pid, &status, 0);
+   if (0 > waitpid(command->pid, &status, 0)) {
+    drop_command(command, "waitpid failed\n");
+    exit(1);
+   }
 
   if ( 0 > ptrace(PTRACE_GETSIGINFO, command->pid, NULL, &info) && errno == EINVAL) {
     drop_command(command, "ptrace PTRACE_GETSIGINFO failed\n");
@@ -55,11 +58,13 @@ t_sys_cycle get_syscall_info(t_command* command) {
   } else if (WIFSIGNALED(status)) { // the child process has been killed
     sys_cycle.status = SIGNAL;
     sys_cycle.ret = WTERMSIG(status);
-  } else if (info.si_signo != SIGTRAP) { // the child process has been interrupted by a signal
+  } else if (info.si_signo != SIGTRAP && info.si_signo != SIGCHLD) { // the child process has been interrupted by a signal
     sys_cycle.status = SIGNAL;
     sys_cycle.ret = info.si_signo;
     kill(command->pid, SIGKILL);
+    if (command->is_summery_enabled == false) print_siginfo(&info);
   } else {
+    if (info.si_signo != SIGTRAP && command->is_summery_enabled == false) print_siginfo(&info);
     sys_cycle.status = RUNNING;
     get_registers_info(&sys_cycle, command);
   }

@@ -174,5 +174,6 @@ void strace(t_command* command);
 t_sys_cycle get_syscall_info(t_command* command);
 void format_syscall(t_sys_cycle* sys_enter, t_sys_cycle* sys_exit, pid_t child_pid);
 void format_syscall_summary();
+void print_siginfo(const siginfo_t *si);
 
 #endif
